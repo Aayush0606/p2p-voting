@@ -23,8 +23,13 @@ export default function Header() {
             <HeaderItem Icon={PlusCircleIcon} title={"New"} />
           </a>
         </Link>
-        <HeaderItem Icon={ChartBarIcon} title={"Leaderboards"} />
-        <Link href="/login">
+        <Link href="/leaderboards">
+          <a>
+            <HeaderItem Icon={ChartBarIcon} title={"Leaderboards"} />
+          </a>
+        </Link>
+
+        <Link href="/admin">
           <a>
             <HeaderItem Icon={LoginIcon} title={"Login"} />
           </a>

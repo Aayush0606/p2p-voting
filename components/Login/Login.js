@@ -1,19 +1,28 @@
-import { useRef } from "react";
-export default function Login() {
+import { useRouter } from "next/router";
+import { useRef, useState } from "react";
+
+export default function Login({ allAdminsList }) {
+  const router = useRouter();
   const emailRef = useRef();
   const passwordRef = useRef();
+  const [showError, setShowError] = useState(false);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
-
-    const data = {
-      email,
-      password,
-    };
-
-    console.log(data);
+    if (
+      email === allAdminsList[0].email &&
+      password === allAdminsList[0].password
+    ) {
+      router.push("/admin");
+    } else {
+      setShowError(true);
+    }
+    // const data = {
+    //   email,
+    //   password,
+    // };
   };
 
   return (
@@ -49,7 +58,13 @@ export default function Login() {
               id="password"
             />
           </div>
-
+          {showError && (
+            <div className="mb-4">
+              <p className="text-red-500 text-center font-bold text-lg">
+                Invalid Credentials
+              </p>
+            </div>
+          )}
           <button
             className="block bg-teal-400 hover:bg-teal-600 text-white uppercase text-lg mx-auto p-4 rounded"
             type="submit"

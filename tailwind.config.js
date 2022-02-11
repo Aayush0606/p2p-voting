@@ -11,6 +11,9 @@ module.exports = {
       spacing: {
         128: "32rem",
       },
+      rotate: {
+        40: "40deg",
+      },
     },
   },
   plugins: [],
