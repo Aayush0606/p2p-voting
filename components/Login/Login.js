@@ -15,14 +15,13 @@ export default function Login({ allAdminsList }) {
       email === allAdminsList[0].email &&
       password === allAdminsList[0].password
     ) {
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("login", "true");
+      }
       router.push("/admin");
     } else {
       setShowError(true);
     }
-    // const data = {
-    //   email,
-    //   password,
-    // };
   };
 
   return (

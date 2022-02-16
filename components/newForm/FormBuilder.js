@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
+import { addRquestedUser } from "../../server/allRequestsHandler";
 export default function FormBuilder() {
   const nameRef = useRef();
   const imageRef = useRef();
@@ -9,14 +10,22 @@ export default function FormBuilder() {
   const [sumbitted, setSumitted] = useState(false);
   const router = useRouter();
 
+  const getBase64 = async (data) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.readAsDataURL(data);
+    });
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
+    // const imageURL = await getBase64(imageRef.current.files[0]); //For upload
     const name = nameRef.current.value;
     const imageURL = imageRef.current.value;
     const email = emailRef.current.value;
     const id = uuidv4();
     const votes = 0;
-
     const data = {
       id,
       name,
@@ -24,6 +33,8 @@ export default function FormBuilder() {
       email,
       votes,
     };
+    const someData = await addRquestedUser(data);
+    console.log(someData);
     const postReq = await fetch("http://localhost:3000/api/requestNewUser", {
       method: "POST",
       headers: {
@@ -34,7 +45,7 @@ export default function FormBuilder() {
     setSumitted(true);
     setTimeout(() => {
       router.push("/");
-    }, 5000);
+    }, 1000);
   };
 
   return (
@@ -44,6 +55,7 @@ export default function FormBuilder() {
           <h1 className="block w-full text-center text-2xl font-bold mb-6 text-[#155774]">
             Candidate infromation
           </h1>
+
           <form onSubmit={submitHandler}>
             <div className="flex flex-col mb-4">
               <label className="mb-2 font-bold text-lg " htmlFor="fullName">

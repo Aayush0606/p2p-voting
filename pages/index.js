@@ -4,8 +4,9 @@ import CandidateList from "../components/CandidateList/CandidateList";
 import Toast from "../components/Toast/Toast";
 
 export async function getStaticProps(context) {
-  let DUMMY_DATA = await fetch("http://localhost:3000/api/getAllUsers");
-  DUMMY_DATA = await DUMMY_DATA.json();
+  const DUMMY_DATA = await fetch("http://localhost:3000/api/getAllUsers").then(
+    (data) => data.json()
+  );
 
   return {
     props: { DUMMY_DATA },

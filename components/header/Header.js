@@ -1,15 +1,18 @@
 import {
   HomeIcon,
-  LoginIcon,
   PlusCircleIcon,
-  LogoutIcon,
   ChartBarIcon,
+  UserIcon,
 } from "@heroicons/react/outline";
 import Image from "next/image";
 import Link from "next/link";
 import HeaderItem from "./HeaderItem";
 
 export default function Header() {
+  let loggedIn;
+  if (typeof window !== "undefined") {
+    loggedIn = window.localStorage.getItem("login");
+  }
   return (
     <header className="flex flex-col sm:flex-row m-5 justify-between items-center h-auto 3xl:m-12">
       <div className="flex flex-grow justify-evenly max-w-md 3xl:max-w-3xl order-2 sm:order-1">
@@ -29,9 +32,9 @@ export default function Header() {
           </a>
         </Link>
 
-        <Link href="/admin">
+        <Link href={loggedIn ? "/admin" : "/admin/login"}>
           <a>
-            <HeaderItem Icon={LoginIcon} title={"Login"} />
+            <HeaderItem Icon={UserIcon} title={"Admin"} />
           </a>
         </Link>
       </div>

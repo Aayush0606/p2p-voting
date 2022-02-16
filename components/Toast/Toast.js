@@ -19,7 +19,7 @@ export default function Toast({ setShowToast }) {
           ></path>
         </svg>
       </div>
-      <div className="ml-3 text-sm font-normal">Set yourself free.</div>
+      <div className="ml-3 text-sm font-normal">Voted successfully.</div>
       <button
         onClick={() => setShowToast(false)}
         type="button"

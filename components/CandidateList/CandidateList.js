@@ -23,7 +23,8 @@ export default function CandidateList({ DUMMY_DATA, setShowToast }) {
             >
               <Image
                 layout="responsive"
-                src={`/api/imageProxy?url=${encodeURIComponent(data.imageURL)}`}
+                // src={`/api/imageProxy?url=${encodeURIComponent(data.imageURL)}`}
+                src={data.imageURL}
                 height={1080}
                 width={1920}
               />

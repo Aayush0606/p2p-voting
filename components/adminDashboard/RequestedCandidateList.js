@@ -1,5 +1,6 @@
 import { XIcon, CheckIcon } from "@heroicons/react/outline";
 import { useRef } from "react";
+import Image from "next/image";
 
 export default function RequestedCandidateList({ data }) {
   const divRef = useRef(null);
@@ -48,22 +49,18 @@ export default function RequestedCandidateList({ data }) {
         <div
           ref={divRef}
           key={data.id}
-          className={`p-5 my-5 shadow-md shadow-cyan-500/50 border rounded-md sm:rounded-full border-pink-300 flex flex-col sm:flex-row w-full justify-between items-center`}
+          className={`p-5 my-5  shadow-md shadow-cyan-500/50 border rounded-md sm:rounded-full border-pink-300 flex flex-col sm:flex-row w-full justify-between items-center`}
         >
           <div className="sm:ml-5">
-            <div>
-              <h3 className="text-xl">{data.name}</h3>
-            </div>
-            <div>
-              <a
-                className="text-lg"
-                href={data.imageURL}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Image Link
-              </a>
-            </div>
+            <h3 className="text-xl">{data.name}</h3>
+          </div>
+          <div className="sm:ml-5">
+            <Image
+              layout="intrinsic"
+              src={data.imageURL}
+              width={100}
+              height={100}
+            />
           </div>
           <div className="flex my-5 sm:my-0">
             <div>
