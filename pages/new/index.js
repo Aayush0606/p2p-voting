@@ -1,4 +1,4 @@
-import NewForms from "../../components/newForm/newForms";
+import NewForms from "../../components/newForm/NewForms";
 import Head from "next/head";
 
 export default function NewCandidate() {
