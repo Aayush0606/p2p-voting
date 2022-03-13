@@ -5,48 +5,57 @@ import AllAdminsList from "../../components/adminDashboard/AllAdminsList";
 import RequestedCandidateList from "../../components/adminDashboard/RequestedCandidateList";
 import { useRouter } from "next/router";
 import { getAllRequestedUsers } from "../../server/allRequestsHandler";
-export default function index({ requestedUserData, someData }) {
-  console.log(someData);
+import { useEffect, useState, useReducer } from "react";
+import Gun from "gun";
+import Head from "next/head";
+export default function index() {
+  const gun = Gun([process.env.NEXT_PUBLIC_RELAY_URL]);
   let loggedIn;
   if (typeof window !== "undefined") {
-    loggedIn = window.localStorage.getItem("login");
+    loggedIn = window.localStorage.getItem(process.env.NEXT_PUBLIC_LOGIN_KEY);
   }
 
   const router = useRouter();
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {
-      window.localStorage.removeItem("login");
+      window.localStorage.removeItem(process.env.NEXT_PUBLIC_LOGIN_KEY);
       router.push("/");
     }
   };
 
-  // {Add New Admin Code}  :-
-  // <div className="mb-10">
-  //         <h1 className="text-center text-3xl text-pink-400 ">
-  //           All admins list
-  //         </h1>
-  //         <div>
-  //           <AddAdminForm />
-  //         </div>
-  //         <div>
-  //           {allAdminsList &&
-  //             allAdminsList.map((data) => <AllAdminsList data={data} />)}
-  //         </div>
-  //       </div>
+  const initialState = {
+    requestedUsers: [],
+  };
+  function reducer(state, message) {
+    return {
+      requestedUsers: [message, ...state.requestedUsers],
+    };
+  }
+  const [state, dispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+    const requestedUsers = gun.get(process.env.NEXT_PUBLIC_REQUESTED_USERS);
+    requestedUsers.map().once((m) => {
+      dispatch(m);
+    });
+  }, []);
 
   return (
     <>
+      <Head>
+        <title>Admin</title>
+      </Head>
       {loggedIn ? (
         <div className="p-5">
           <div>
             <h1 className="text-center text-3xl text-pink-400">
               New candidate request
             </h1>
-            {requestedUserData &&
-              requestedUserData.map((data) => (
-                <RequestedCandidateList data={data} />
-              ))}
+            {state.requestedUsers &&
+              state.requestedUsers.map(
+                (data) =>
+                  data !== null && <RequestedCandidateList data={data} />
+              )}
           </div>
           <div className="my-5">
             <button
@@ -68,18 +77,4 @@ export default function index({ requestedUserData, someData }) {
       )}
     </>
   );
-}
-
-export async function getStaticProps(context) {
-  const requestedUserData = await fetch(
-    "http://localhost:3000/api/requestedUsersList"
-  ).then((data) => data.json());
-  // const allAdminsList = await fetch(
-  //   "http://localhost:3000/api/allAdminsList"
-  // ).then((data) => data.json());
-  const someData = await getAllRequestedUsers();
-
-  return {
-    props: { requestedUserData, someData },
-  };
 }

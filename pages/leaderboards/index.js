@@ -1,27 +1,33 @@
 import Leaderboard from "../../components/leaderboard/Leaderboard";
+import { useEffect, useState, useReducer } from "react";
+import Gun from "gun";
+import Head from "next/head";
+export default function index() {
+  const gun = Gun([process.env.NEXT_PUBLIC_RELAY_URL]);
+  const initialState = {
+    leaderboard: [],
+  };
+  function reducer(state, message) {
+    return {
+      leaderboard: [message, ...state.leaderboard],
+    };
+  }
+  const [state, dispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+    const approvedUsers = gun.get(process.env.NEXT_PUBLIC_APPROVED_USERS);
+    approvedUsers.map().once((m) => {
+      dispatch(m);
+    });
+  }, []);
 
-export default function index({ leaderboard }) {
   return (
     <>
+      <Head>
+        <title>Leaderboards</title>
+      </Head>
       <div>
-        {leaderboard &&
-          leaderboard.map((data, idx) => {
-            return (
-              <div key={data.id}>
-                <Leaderboard data={data} idx={idx} />
-              </div>
-            );
-          })}
+        {state.leaderboard && <Leaderboard DUMMY_DATA={state.leaderboard} />}
       </div>
     </>
   );
-}
-
-export async function getStaticProps(context) {
-  let leaderboard = await fetch("http://localhost:3000/api/leaderboard").then(
-    (data) => data.json()
-  );
-  return {
-    props: { leaderboard },
-  };
 }

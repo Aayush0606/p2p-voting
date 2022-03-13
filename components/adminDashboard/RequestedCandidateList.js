@@ -1,46 +1,19 @@
 import { XIcon, CheckIcon } from "@heroicons/react/outline";
 import { useRef } from "react";
 import Image from "next/image";
+import { rejectRequestedUser } from "../../server/allRequestsHandler";
+import { acceptRequestedUser } from "../../server/allRequestsHandler";
 
 export default function RequestedCandidateList({ data }) {
   const divRef = useRef(null);
 
   const approveUser = async () => {
     divRef.current.classList.add("hidden");
-    const deleteUserFromRequest = await fetch(
-      "http://localhost:3000/api/deleteRequestedUser",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
-
-    const addUserInList = await fetch(
-      "http://localhost:3000/api/acceptRequestedUser",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    acceptRequestedUser(data);
   };
   const rejectUser = async () => {
     divRef.current.classList.add("hidden");
-    const deleteUser = await fetch(
-      "http://localhost:3000/api/deleteRequestedUser",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    rejectRequestedUser(data);
   };
 
   return (
@@ -57,7 +30,7 @@ export default function RequestedCandidateList({ data }) {
           <div className="sm:ml-5">
             <Image
               layout="intrinsic"
-              src={data.imageURL}
+              src={`/api/imageProxy?url=${encodeURIComponent(data.imageURL)}`}
               width={100}
               height={100}
             />

@@ -1,14 +1,28 @@
 import Image from "next/image";
-export default function CandidateList({ DUMMY_DATA, setShowToast }) {
+import { voteUser } from "../../server/allRequestsHandler";
+export default function CandidateList({
+  setShowToast,
+  DUMMY_DATA,
+  setToastMsg,
+}) {
   const voteHandler = async (data) => {
-    setShowToast(true);
-    const updateVote = await fetch("http://localhost:3000/api/voteUser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    console.log(process.env.NEXT_PUBLIC_CHECK_VOTED);
+    if (typeof window !== "undefined") {
+      console.log("IN CLICK");
+      if (window.localStorage.getItem(process.env.NEXT_PUBLIC_CHECK_VOTED)) {
+        setToastMsg("Already voted 😕");
+        setShowToast(true);
+        return;
+      } else {
+        window.localStorage.setItem(
+          process.env.NEXT_PUBLIC_CHECK_VOTED,
+          "true"
+        );
+        setToastMsg("Voted successfully 😀");
+        setShowToast(true);
+        const xyz = await voteUser(data.id);
+      }
+    }
   };
 
   return (
@@ -18,13 +32,12 @@ export default function CandidateList({ DUMMY_DATA, setShowToast }) {
           return (
             <div
               onClick={() => voteHandler(data)}
-              key={data.name}
-              className="3xl:w-128 p-2 cursor-pointer transition duration-200 ease-in transform sm:hover:scale-105 sm:hover:z-50"
+              key={data.id}
+              className="3xl:w-128 m-2 p-2 border-2 border-purple-400 sm:border-0 cursor-pointer transition duration-200 ease-in transform sm:hover:scale-105 sm:hover:border-2  sm:hover:z-50"
             >
               <Image
                 layout="responsive"
-                // src={`/api/imageProxy?url=${encodeURIComponent(data.imageURL)}`}
-                src={data.imageURL}
+                src={`/api/imageProxy?url=${encodeURIComponent(data.imageURL)}`}
                 height={1080}
                 width={1920}
               />

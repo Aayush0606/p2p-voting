@@ -11,7 +11,7 @@ import HeaderItem from "./HeaderItem";
 export default function Header() {
   let loggedIn;
   if (typeof window !== "undefined") {
-    loggedIn = window.localStorage.getItem("login");
+    loggedIn = window.localStorage.getItem(process.env.NEXT_PUBLIC_LOGIN_KEY);
   }
   return (
     <header className="flex flex-col sm:flex-row m-5 justify-between items-center h-auto 3xl:m-12">

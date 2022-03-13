@@ -1,20 +1,27 @@
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState, useReducer } from "react";
 import CandidateList from "../components/CandidateList/CandidateList";
 import Toast from "../components/Toast/Toast";
-
-export async function getStaticProps(context) {
-  const DUMMY_DATA = await fetch("http://localhost:3000/api/getAllUsers").then(
-    (data) => data.json()
-  );
-
-  return {
-    props: { DUMMY_DATA },
+import Gun from "gun";
+export default function Home() {
+  const gun = Gun([process.env.NEXT_PUBLIC_RELAY_URL]);
+  const initialState = {
+    approvedUsers: [],
   };
-}
-
-export default function Home({ DUMMY_DATA }) {
+  function reducer(state, message) {
+    return {
+      approvedUsers: [message, ...state.approvedUsers],
+    };
+  }
+  const [state, dispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+    const approvedUsers = gun.get(process.env.NEXT_PUBLIC_APPROVED_USERS);
+    approvedUsers.map().once((m) => {
+      dispatch(m);
+    });
+  }, []);
   const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
   return (
     <>
       <Head>
@@ -22,12 +29,16 @@ export default function Home({ DUMMY_DATA }) {
       </Head>
       <div className="absolute w-full z-0">
         <div>
-          <CandidateList setShowToast={setShowToast} DUMMY_DATA={DUMMY_DATA} />
+          <CandidateList
+            setShowToast={setShowToast}
+            DUMMY_DATA={state.approvedUsers}
+            setToastMsg={setToastMsg}
+          />
         </div>
 
         {showToast && (
           <div className="fixed bottom-0 w-full   z-10">
-            <Toast setShowToast={setShowToast} />
+            <Toast setShowToast={setShowToast} toastMsg={toastMsg} />
           </div>
         )}
       </div>

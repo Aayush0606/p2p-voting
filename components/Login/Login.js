@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 
-export default function Login({ allAdminsList }) {
+export default function Login() {
   const router = useRouter();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -12,11 +12,11 @@ export default function Login({ allAdminsList }) {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     if (
-      email === allAdminsList[0].email &&
-      password === allAdminsList[0].password
+      email === process.env.NEXT_PUBLIC_ADMIN_USERNAME &&
+      password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD
     ) {
       if (typeof window !== "undefined") {
-        window.localStorage.setItem("login", "true");
+        window.localStorage.setItem(process.env.NEXT_PUBLIC_LOGIN_KEY, "true");
       }
       router.push("/admin");
     } else {

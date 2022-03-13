@@ -1,18 +1,13 @@
 import Login from "../../components/Login/Login";
+import Head from "next/head";
 
-export default function login({ allAdminsList }) {
+export default function login() {
   return (
     <>
-      <Login allAdminsList={allAdminsList} />
+      <Head>
+        <title>Admin Login</title>
+      </Head>
+      <Login />
     </>
   );
-}
-
-export async function getStaticProps(context) {
-  let allAdminsList = await fetch("http://localhost:3000/api/allAdminsList");
-  allAdminsList = await allAdminsList.json();
-
-  return {
-    props: { allAdminsList },
-  };
 }
