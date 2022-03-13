@@ -1,7 +1,7 @@
 import Login from "../../components/Login/Login";
 import Head from "next/head";
 
-export default function Login() {
+export default function LoginPage() {
   return (
     <>
       <Head>
