@@ -2,7 +2,7 @@ import Leaderboard from "../../components/leaderboard/Leaderboard";
 import { useEffect, useState, useReducer } from "react";
 import Gun from "gun";
 import Head from "next/head";
-export default function index() {
+export default function Index() {
   const gun = Gun([process.env.NEXT_PUBLIC_RELAY_URL]);
   const initialState = {
     leaderboard: [],
